@@ -106,8 +106,7 @@ def create_config_file(frontend_config, frontend_endpoints, url_base, metadata_d
 
     # TODO Only supports the VOPaaSSaml2Frontend
     cnf = VOPaaSSamlFrontend._load_endpoints_to_config(cnf, frontend_endpoints, url_base, name, entity_id)
-
-    cnf["entityid"] = "{}/{}".format(proxy_id, entity_id)
+    cnf = VOPaaSSamlFrontend._load_entity_id_to_config(proxy_id, entity_id, cnf)
     return cnf
 
 
