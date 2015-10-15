@@ -26,11 +26,9 @@ ENDPOINTS = {"single_sign_on_service": {BINDING_HTTP_REDIRECT: "sso/redirect",
 
 
 class Saml2FrontendModulePlugin(FrontendModulePlugin):
-
-    @staticmethod
-    def get_instance(base_url):
+    def __init__(self, base_url):
         idpConfig = {
-            "entityid": "%s/%s/proxy.xml" % (base_url, RECEIVER),
+            "entityid": "%s/%s/vopaas_proxy.xml" % (base_url, RECEIVER),
             "description": "A SAML2SAML proxy",
             "entity_category": [COC, RESEARCH_AND_EDUCATION, HEI, SFS_1993_1153, NREN,
                                 EU],
@@ -83,4 +81,4 @@ class Saml2FrontendModulePlugin(FrontendModulePlugin):
                   "base": base_url,
                   }
 
-        return Saml2FrontendModulePlugin(MODULE, RECEIVER, config)
+        super(Saml2FrontendModulePlugin, self).__init__(MODULE, RECEIVER, config)

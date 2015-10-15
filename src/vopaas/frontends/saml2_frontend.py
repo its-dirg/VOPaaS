@@ -53,10 +53,14 @@ class VOPaaSSamlFrontend(SamlFrontend):
         idp = self._load_idp_dynamic_endpoints(context)
         return self._handle_authn_request(context, binding_in, idp)
 
-    def save_state(self, context, _dict, _request):
-        state = super(VOPaaSSamlFrontend, self).save_state(context, _dict, _request)
+    def save_state(self, context, _dict, _request, idp):
+        state = super(VOPaaSSamlFrontend, self).save_state(context, _dict, _request, idp)
         state["proxy_idp_entityid"] = self._get_target_entity_id(context)
         return state
+
+    def handle_backend_error(self, exception):
+        idp = self._load_idp_dynamic_entity_id(self.config, exception.state)
+        return self._handle_backend_error(exception, idp)
 
     def handle_authn_response(self, context, internal_response, state):
         idp = self._load_idp_dynamic_entity_id(self.config, state)
@@ -74,9 +78,9 @@ class VOPaaSSamlFrontend(SamlFrontend):
                     valid_providers = "{}|^{}".format(valid_providers, provider)
                 valid_providers = valid_providers.lstrip("|")
                 parsed_endp = urlparse(endp)
-                url_map.append(("%s/[\w]+/%s$" % (valid_providers, parsed_endp.path),
+                url_map.append(("(%s)/[\w]+/%s$" % (valid_providers, parsed_endp.path),
                                 (self.handle_authn_request, service.BINDING_MAP[binding])))
-                url_map.append(("%s/[\w]+/%s/(.*)$" % (valid_providers, parsed_endp.path),
+                url_map.append(("(%s)/[\w]+/%s/(.*)$" % (valid_providers, parsed_endp.path),
                                 (self.handle_authn_request, service.BINDING_MAP[binding])))
 
         return url_map

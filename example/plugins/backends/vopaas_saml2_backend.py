@@ -28,13 +28,13 @@ MODULE = VOPaaSSamlBackend
 
 
 class Saml2BackendModulePlugin(BackendModulePlugin):
-    @staticmethod
-    def get_instance(base_url):
+    def __init__(self, base_url):
         module_base = "%s/%s" % (base_url, PROVIDER)
         config = {
+            "encryption_key": "INJxz3Seglf3",
             "disco_srv": "http://localhost:8080/role/idp.ds",
             "publish_metadata": "%s/metadata" % module_base,
-            "entityid": "%s/proxy_saml2_backend.xml" % module_base,
+            "entityid": "%s/vopaas_saml2_backend.xml" % module_base,
             "description": "A SAML2 SP MODULE",
             "entity_category": [COC, RESEARCH_AND_EDUCATION, HEI, SFS_1993_1153, NREN,
                                 EU],
@@ -88,4 +88,4 @@ class Saml2BackendModulePlugin(BackendModulePlugin):
             }
         }
 
-        return Saml2BackendModulePlugin(MODULE, PROVIDER, config)
+        super(Saml2BackendModulePlugin, self).__init__(MODULE, PROVIDER, config)
