@@ -31,7 +31,6 @@ from satosa.plugin_loader import backend_filter, _load_plugins, _load_endpoint_m
 from satosa.satosa_config import SATOSAConfig
 from vopaas.frontends.saml2_frontend import VOPaaSSamlFrontend
 
-VALID_FOR = 0
 NSPAIR = {"xs": "http://www.w3.org/2001/XMLSchema"}
 
 ONTS = {
@@ -62,33 +61,33 @@ def create_combined_metadata(metadata_files):
     return mds.dumps()
 
 
-def _make_metadata(config_dict):
+def _make_metadata(config_dict, option):
     eds = []
     cnf = Config()
     cnf.load(copy.deepcopy(config_dict), metadata_construction=True)
 
-    if VALID_FOR:
-        cnf.valid_for = VALID_FOR
+    if option.valid:
+        cnf.valid_for = option.valid
     eds.append(entity_descriptor(cnf))
 
     conf = Config()
-    conf.key_file = args.keyfile
-    conf.cert_file = args.cert
+    conf.key_file = option.keyfile
+    conf.cert_file = option.cert
     conf.debug = 1
-    conf.xmlsec_binary = args.xmlsec
+    conf.xmlsec_binary = option.xmlsec
     secc = security_context(conf)
 
-    if args.id:
-        desc, xmldoc = entities_descriptor(eds, VALID_FOR, args.name, args.id,
-                                           args.sign, secc)
+    if option.id:
+        desc, xmldoc = entities_descriptor(eds, option.valid, option.name, option.id,
+                                           option.sign, secc)
         valid_instance(desc)
         print(desc.to_string(NSPAIR))
     else:
         for eid in eds:
-            if args.sign:
+            if option.sign:
                 assert conf.key_file
                 assert conf.cert_file
-                eid, xmldoc = sign_entity_descriptor(eid, args.id, secc)
+                eid, xmldoc = sign_entity_descriptor(eid, option.id, secc)
             else:
                 xmldoc = None
 
@@ -99,6 +98,7 @@ def _make_metadata(config_dict):
 
 def create_config_file(frontend_config, frontend_endpoints, url_base, metadata_desc, name):
     cnf = copy.deepcopy(frontend_config)
+    metadata_desc = metadata_desc.to_dict()
     proxy_id = cnf["entityid"]
     entity_id = metadata_desc["entityid"]
 
@@ -121,13 +121,12 @@ def _join_dict(dict_a, dict_b):
     return dict_a
 
 
-def make_vopaas_metadata(fil):
-    conf_mod = SATOSAConfig(fil)
+def make_vopaas_metadata(option):
+    conf_mod = SATOSAConfig(option.config_file)
 
-    frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, conf_mod.BASE,
-                                     frontend_filter)
+    frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter, conf_mod.BASE)
 
-    backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, conf_mod.BASE, backend_filter)
+    backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, backend_filter, conf_mod.BASE)
     backend_modules = _load_endpoint_modules(backend_plugins, None)
 
     metadata = {}
@@ -143,16 +142,30 @@ def make_vopaas_metadata(fil):
             for desc in meta_desc:
                 metadata[frontend.name].append(
                     _make_metadata(
-                        create_config_file(frontend_config, frontend_endpoints, url_base, desc, provider)))
+                        create_config_file(frontend_config, frontend_endpoints, url_base, desc, provider), option))
 
-    for index, frontend in enumerate(metadata.keys()):
+    for frontend in metadata:
         combined_metadata = create_combined_metadata(metadata[frontend])
-        if args.output:
-            out_file = open(args.output, 'w')
+        if option.output:
+            out_file = open(option.output, 'w')
             out_file.write(combined_metadata)
             out_file.close()
         else:
             print(combined_metadata)
+
+
+class MetadataOption(object):
+    def __init__(self, config_file, valid=None, cert=None, id=None, keyfile=None, name="", sign=None, xmlsec=None,
+                 output=None):
+        self.config_file = config_file
+        self.valid = int(valid) * 24 if valid else 0
+        self.cert = cert
+        self.id = id
+        self.keyfile = keyfile
+        self.name = name
+        self.sign = sign
+        self.xmlsec = xmlsec
+        self.output = output
 
 
 if __name__ == '__main__':
@@ -173,12 +186,10 @@ if __name__ == '__main__':
     parser.add_argument(dest="config", nargs='+')
     args = parser.parse_args()
 
-    if args.valid:
-        # translate into hours
-        VALID_FOR = int(args.valid) * 24
-
     for filespec in args.config:
         bas, fil = os.path.split(filespec)
         if bas != "":
             sys.path.insert(0, bas)
-        make_vopaas_metadata(fil)
+        option = MetadataOption(fil, args.valid, args.cert, args.id, args.keyfile, args.name, args.sign, args.xmlsec,
+                                args.output)
+        make_vopaas_metadata(option)
