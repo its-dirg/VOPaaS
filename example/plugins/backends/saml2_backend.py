@@ -51,8 +51,8 @@ class Saml2BackendModulePlugin(BackendModulePlugin):
                 }
             },
             "debug": 1,
-            "key_file": full_path("pki/new_server.key"),
-            "cert_file": full_path("pki/new_server.crt"),
+            "key_file": full_path("../../pki/new_server.key"),
+            "cert_file": full_path("../../pki/new_server.crt"),
             "metadata": {
                 "local": ["/Users/mathiashedstrom/work/DIRG/pysaml2/example/idp2/idp.xml",
                           "/Users/mathiashedstrom/work/DIRG/pysaml2/example/idp2/idp2.xml"],

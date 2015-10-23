@@ -58,8 +58,8 @@ class Saml2FrontendModulePlugin(FrontendModulePlugin):
                 },
             },
             "debug": 1,
-            "key_file": full_path("pki/new_server.key"),
-            "cert_file": full_path("pki/new_server.crt"),
+            "key_file": full_path("../../pki/new_server.key"),
+            "cert_file": full_path("../../pki/new_server.crt"),
             "metadata": {
                 "local": ["/Users/mathiashedstrom/work/DIRG/pysaml2/example/sp-wsgi/sp.xml"],
             },
