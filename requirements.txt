@@ -1,0 +1,5 @@
+git+https://github.com/rohe/pysaml2@6c0bec3d7fb09bb89e95725f76597204b1de6269
+git+https://github.com//its-dirg/satosa
+CherryPy==3.8.0
+Beaker==1.7.0
+Werkzeug==0.10.4

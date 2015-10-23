@@ -10,5 +10,6 @@ setup(
     license='',
     author='DIRG',
     author_email='',
-    description=''
+    description='',
+    install_requires=["pluginbase"],
 )
