@@ -3,6 +3,7 @@ import argparse
 import copy
 import os
 import sys
+from saml2.attribute_converter import ac_factory
 from saml2.mdstore import MetaDataFile, MetadataStore
 from saml2.metadata import entity_descriptor, metadata_tostring_fix
 from saml2.metadata import entities_descriptor
@@ -47,14 +48,13 @@ ONTS = {
     shibmd.NAMESPACE: shibmd
 }
 
-
 def create_combined_metadata(metadata_files):
     mds = MetadataStore(ONTS.values(), None, None)
     key = 1
     for data in metadata_files:
         kwargs = {}
         metad = MetaDataFile(ONTS.values(), None, filename="no_file", **kwargs)
-        metad.parse_and_check_signature(data)
+        assert metad.parse_and_check_signature(data)
         mds.metadata["data_{}".format(key)] = metad
         key += 1
 
@@ -145,13 +145,20 @@ def make_vopaas_metadata(option):
                         create_config_file(frontend_config, frontend_endpoints, url_base, desc, provider), option))
 
     for frontend in metadata:
-        combined_metadata = create_combined_metadata(metadata[frontend])
-        if option.output:
-            out_file = open(option.output, 'w')
-            out_file.write(combined_metadata)
+        front = 0
+        for meta in metadata[frontend]:
+            out_file = open("{}/proxy_front{}_metadata.xml".format(args.output, front), 'w')
+            out_file.write(meta)
             out_file.close()
-        else:
-            print(combined_metadata)
+            front += 1
+
+        # combined_metadata = create_combined_metadata(metadata[frontend])
+        # if option.output:
+        #     out_file = open(option.output, 'w')
+        #     out_file.write(combined_metadata)
+        #     out_file.close()
+        # else:
+        #     print(combined_metadata)
 
 
 class MetadataOption(object):
