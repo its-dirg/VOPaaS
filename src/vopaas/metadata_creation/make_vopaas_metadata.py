@@ -189,7 +189,7 @@ if __name__ == '__main__':
                         help="sign the metadata")
     parser.add_argument('-x', dest='xmlsec',
                         help="xmlsec binaries to be used for the signing")
-    parser.add_argument('-o', dest='output', default="")
+    parser.add_argument('-o', dest='output', default=".")
     parser.add_argument(dest="config", nargs='+')
     args = parser.parse_args()
 
