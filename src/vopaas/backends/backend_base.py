@@ -1,3 +1,4 @@
+from base64 import urlsafe_b64encode
 from satosa.backends.base import BackendModule
 from vopaas.metadata_creation.description import MetadataDescription, ContactPersonDesc, OrganizationDesc, UIInfoDesc
 
@@ -11,7 +12,7 @@ class VOPaaSBackendModule(BackendModule):
 
 def get_metadata_desc_for_oidc_backend(config):
     metadata_description = []
-    entity_id = config["op_url"]
+    entity_id = urlsafe_b64encode(config["op_url"].encode("utf-8")).decode("utf-8")
     description = MetadataDescription(entity_id)
 
     if "op_info" in config:
