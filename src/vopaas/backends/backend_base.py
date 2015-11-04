@@ -10,9 +10,10 @@ class VOPaaSBackendModule(BackendModule):
         raise NotImplementedError()
 
 
-def get_metadata_desc_for_oidc_backend(config):
+def get_metadata_desc_for_oidc_backend(config, entity_id=None):
     metadata_description = []
-    entity_id = urlsafe_b64encode(config["op_url"].encode("utf-8")).decode("utf-8")
+    if entity_id is None:
+        entity_id = urlsafe_b64encode(config["op_url"].encode("utf-8")).decode("utf-8")
     description = MetadataDescription(entity_id)
 
     if "op_info" in config:
