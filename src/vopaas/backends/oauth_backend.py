@@ -5,9 +5,9 @@ __author__ = 'mathiashedstrom'
 
 
 class VOPaaSOAuthBackend(OAuthBackend, VOPaaSBackendModule):
-    def __init__(self, auth_callback_func, internal_attributes, config):
+    def __init__(self, auth_callback_func, internal_attributes, config, type):
         self.oidc_backend_config = config
-        super(VOPaaSOAuthBackend, self).__init__(auth_callback_func,internal_attributes, config)
+        super(VOPaaSOAuthBackend, self).__init__(auth_callback_func, internal_attributes, config, type)
 
     def get_metadata_desc(self):
         return get_metadata_desc_for_oidc_backend(self.oidc_backend_config)
