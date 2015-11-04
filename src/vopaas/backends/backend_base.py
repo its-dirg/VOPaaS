@@ -13,7 +13,8 @@ class VOPaaSBackendModule(BackendModule):
 def get_metadata_desc_for_oidc_backend(config, entity_id=None):
     metadata_description = []
     if entity_id is None:
-        entity_id = urlsafe_b64encode(config["op_url"].encode("utf-8")).decode("utf-8")
+        entity_id = config["op_url"]
+    entity_id = urlsafe_b64encode(entity_id.encode("utf-8")).decode("utf-8")
     description = MetadataDescription(entity_id)
 
     if "op_info" in config:
