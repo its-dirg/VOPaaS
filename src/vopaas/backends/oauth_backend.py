@@ -5,7 +5,7 @@ __author__ = 'mathiashedstrom'
 
 
 class VOPaaSOAuthBackend(OAuthBackend, VOPaaSBackendModule):
-    def __init__(self, auth_callback_func, internal_attributes, config, type):
+    def __init__(self, auth_callback_func, internal_attributes, config, type="None"):
         self.oidc_backend_config = config
         super(VOPaaSOAuthBackend, self).__init__(auth_callback_func, internal_attributes, config, type)
 
