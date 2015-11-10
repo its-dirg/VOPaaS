@@ -1,3 +1,5 @@
+from satosa.image_converter import convert_to_base64
+
 __author__ = 'mathiashedstrom'
 
 class ContactPersonDesc(object):
@@ -74,6 +76,7 @@ class UIInfoDesc(object):
         :param height: height of logo
         :param lang: language
         """
+        text = convert_to_base64(text)
         self._logos.append({"text": text, "width": width, "height": height, "lang": lang})
 
     def to_dict(self):

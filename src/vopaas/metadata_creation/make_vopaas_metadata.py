@@ -127,7 +127,7 @@ def make_vopaas_metadata(option):
     frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter, conf_mod.BASE)
 
     backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, backend_filter, conf_mod.BASE)
-    backend_modules = _load_endpoint_modules(backend_plugins, None)
+    backend_modules = _load_endpoint_modules(backend_plugins, None, conf_mod.INTERNAL_ATTRIBUTES)
 
     metadata = {}
     for frontend in frontend_plugins:
