@@ -48,14 +48,12 @@ class WsgiApplication(SATOSABase):
             resp = self.run(context)
             return resp(environ, start_response)
         except NoBoundEndpointError:
-            LOGGER.debug("unknown side: %s" % path)
+            LOGGER.error("unknown side: %s" % path)
             resp = NotFound("Couldn't find the side you asked for!")
             return resp(environ, start_response)
         except Exception as err:
+            LOGGER.exception("%s" % err)
             if not self.debug:
-                print("%s" % err, file=sys.stderr)
-                traceback.print_exc()
-                LOGGER.exception("%s" % err)
                 resp = ServiceError("%s" % err)
                 return resp(environ, start_response)
             else:
