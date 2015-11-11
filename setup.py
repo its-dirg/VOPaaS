@@ -5,7 +5,7 @@ setup(
     version='',
     packages=['vopaas', 'vopaas.backends', 'vopaas.frontends', 'vopaas.metadata_creation'],
     package_dir={'': 'src'},
-    scripts=["src/vopaas/metadata_creation/make_vopaas_metadata.py"],
+    scripts=["src/vopaas/metadata_creation/make_vopaas_metadata.py", "src/vopaas/vopaas_server.py"],
     url='',
     license='',
     author='DIRG',

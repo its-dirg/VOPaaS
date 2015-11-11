@@ -2,7 +2,6 @@ import argparse
 import os
 import logging
 import sys
-import traceback
 
 import cherrypy
 from beaker.middleware import SessionMiddleware
