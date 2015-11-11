@@ -28,6 +28,7 @@ from saml2 import xmlenc
 # =============================================================================
 # Script that creates a VOPaaS proxy metadata file from a SATOSAConfig file
 # =============================================================================
+from satosa.plugin_base.endpoint import BackendModulePlugin, FrontendModulePlugin
 from satosa.plugin_loader import backend_filter, _load_plugins, _load_endpoint_modules, frontend_filter
 from satosa.satosa_config import SATOSAConfig
 from vopaas.frontends.saml2_frontend import VOPaaSSamlFrontend
@@ -124,9 +125,11 @@ def _join_dict(dict_a, dict_b):
 def make_vopaas_metadata(option):
     conf_mod = SATOSAConfig(option.config_file)
 
-    frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter, conf_mod.BASE)
+    frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter,
+                                     FrontendModulePlugin.__name__, conf_mod.BASE)
 
-    backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, backend_filter, conf_mod.BASE)
+    backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, backend_filter,
+                                    BackendModulePlugin.__name__, conf_mod.BASE)
     backend_modules = _load_endpoint_modules(backend_plugins, None, conf_mod.INTERNAL_ATTRIBUTES)
 
     metadata = {}
