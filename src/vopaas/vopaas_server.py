@@ -1,4 +1,5 @@
 import argparse
+from logging.handlers import SysLogHandler
 import os
 import logging
 import sys
@@ -15,6 +16,18 @@ from satosa.service import unpack_either
 
 LOGFILE_NAME = 'vopaas.log'
 base_formatter = logging.Formatter("[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s")
+
+
+#https://docs.python.org/2/library/logging.handlers.html
+#http://stackoverflow.com/questions/3968669/how-to-configure-logging-to-syslog-in-python
+#Can be logged with import syslog as well.
+#satosa_stats = logging.getLogger("satosa_stats")
+#Linux#hdlr = SysLogHandler("/dev/log")
+#OS X#
+#hdlr = SysLogHandler("/var/run/syslog")
+#hdlr.setFormatter(base_formatter)
+#satosa_stats.addHandler(hdlr)
+#satosa_stats.setLevel(logging.INFO)
 
 satosa_logger = logging.getLogger("satosa")
 hdlr = logging.FileHandler(LOGFILE_NAME)
