@@ -9,10 +9,10 @@ from vopaas.metadata_creation.description import MetadataDescription, Organizati
 logger = logging.getLogger(__name__)
 
 class VOPaaSSamlBackend(SamlBackend, VOPaaSBackendModule):
-    def start_auth(self, context, request_info, state):
+    def start_auth(self, context, request_info):
         entity_id = context.internal_data["vopaas.target_entity_id"]
         entity_id = urlsafe_b64decode(entity_id).decode("utf-8")
-        return self.authn_request(context, entity_id, request_info, state)
+        return self.authn_request(context, entity_id, request_info)
 
     def get_metadata_desc(self):
         # TODO Only get IDPs

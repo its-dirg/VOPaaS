@@ -62,9 +62,9 @@ class VOPaaSSamlFrontend(SamlFrontend):
         idp = self._load_idp_dynamic_entity_id(self.config, exception.state)
         return self._handle_backend_error(exception, idp)
 
-    def handle_authn_response(self, context, internal_response, state):
-        idp = self._load_idp_dynamic_entity_id(self.config, state)
-        return self._handle_authn_response(context, internal_response, state, idp)
+    def handle_authn_response(self, context, internal_response):
+        idp = self._load_idp_dynamic_entity_id(self.config, context.state)
+        return self._handle_authn_response(context, internal_response, idp)
 
     def register_endpoints(self, providers):
         self._validate_providers(providers)

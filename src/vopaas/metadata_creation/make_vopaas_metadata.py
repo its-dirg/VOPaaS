@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import argparse
 import copy
+import logging
 import os
 import sys
-from saml2.attribute_converter import ac_factory
 from saml2.mdstore import MetaDataFile, MetadataStore
 from saml2.metadata import entity_descriptor, metadata_tostring_fix
 from saml2.metadata import entities_descriptor
@@ -25,13 +25,20 @@ from saml2.extension import ui
 from saml2 import xmldsig
 from saml2 import xmlenc
 
-# =============================================================================
-# Script that creates a VOPaaS proxy metadata file from a SATOSAConfig file
-# =============================================================================
 from satosa.plugin_base.endpoint import BackendModulePlugin, FrontendModulePlugin
 from satosa.plugin_loader import backend_filter, _load_plugins, _load_endpoint_modules, frontend_filter
 from satosa.satosa_config import SATOSAConfig
 from vopaas.frontends.saml2_frontend import VOPaaSSamlFrontend
+# =============================================================================
+# Script that creates a VOPaaS proxy metadata file from a SATOSAConfig file
+# =============================================================================
+
+LOGGER = logging.getLogger("")
+handler = logging.StreamHandler()
+logFormatter = logging.Formatter("[%(name)-12.12s] [%(levelname)-5.5s]  %(message)s")
+handler.setFormatter(logFormatter)
+LOGGER.addHandler(handler)
+LOGGER.setLevel(logging.INFO)
 
 NSPAIR = {"xs": "http://www.w3.org/2001/XMLSchema"}
 
@@ -48,6 +55,7 @@ ONTS = {
     xmlenc.NAMESPACE: xmlenc,
     shibmd.NAMESPACE: shibmd
 }
+
 
 def create_combined_metadata(metadata_files):
     mds = MetadataStore(ONTS.values(), None, None)
@@ -127,10 +135,14 @@ def make_vopaas_metadata(option):
 
     frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter,
                                      FrontendModulePlugin.__name__, conf_mod.BASE)
-
     backend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.BACKEND_MODULES, backend_filter,
                                     BackendModulePlugin.__name__, conf_mod.BASE)
     backend_modules = _load_endpoint_modules(backend_plugins, None, conf_mod.INTERNAL_ATTRIBUTES)
+
+    frontend_names = [p.name for p in frontend_plugins]
+    backend_names = [p.name for p in backend_plugins]
+    LOGGER.info("Loaded frontend plugins: {}".format(frontend_names))
+    LOGGER.info("Loaded backend plugins: {}".format(backend_names))
 
     metadata = {}
     for frontend in frontend_plugins:
@@ -141,6 +153,7 @@ def make_vopaas_metadata(option):
 
         for plugin in backend_plugins:
             provider = plugin.name
+            LOGGER.info("Creating metadata for frontend '{}' and backend '{}'".format(frontend.name, provider))
             meta_desc = backend_modules[provider].get_metadata_desc()
             for desc in meta_desc:
                 metadata[frontend.name].append(
@@ -150,7 +163,9 @@ def make_vopaas_metadata(option):
     for frontend in metadata:
         front = 0
         for meta in metadata[frontend]:
-            out_file = open("{}/proxy_front{}_metadata.xml".format(args.output, front), 'w')
+            path = "{}/proxy_front{}_metadata.xml".format(args.output, front)
+            LOGGER.info("Writing metadata '{}".format(path))
+            out_file = open(path, 'w')
             out_file.write(meta)
             out_file.close()
             front += 1
@@ -177,6 +192,9 @@ class MetadataOption(object):
         self.xmlsec = xmlsec
         self.output = output
 
+    def __str__(self):
+        return str(self.__dict__)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -200,6 +218,8 @@ if __name__ == '__main__':
         bas, fil = os.path.split(filespec)
         if bas != "":
             sys.path.insert(0, bas)
+        LOGGER.info("Generating metadata for proxy config: '{}'".format(fil))
         option = MetadataOption(fil, args.valid, args.cert, args.id, args.keyfile, args.name, args.sign, args.xmlsec,
                                 args.output)
+        LOGGER.info("Settings: {}".format(option))
         make_vopaas_metadata(option)
