@@ -1,3 +1,6 @@
+"""
+The VOPaaS proxy main module
+"""
 import argparse
 import os
 import logging
@@ -30,11 +33,24 @@ cherrypy_logger.setLevel(logging.INFO)
 
 
 class WsgiApplication(SATOSABase):
-    def __init__(self, config, debug=False):
+    """
+    The WSGI application
+    """
+
+    def __init__(self, config):
+        """
+        :type config: satosa.satosa_config.SATOSAConfig
+        :param config: The vopaas proxy config
+        """
         super(WsgiApplication, self).__init__(config)
-        self.debug = debug
 
     def run_server(self, environ, start_response):
+        """
+        Main proxy function
+        :param environ: The WSGI environ
+        :param start_response: The WSGI start_response
+        :return: response
+        """
         path = environ.get('PATH_INFO', '').lstrip('/')
         if ".." in path:
             resp = Unauthorized()
@@ -50,6 +66,9 @@ class WsgiApplication(SATOSABase):
 
 
 def main():
+    """
+    The main function
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', action='store_true', dest="debug",
                         help="Enable debug mode.")
@@ -67,6 +86,8 @@ def main():
     wsgi_app = WsgiApplication(server_config, args.debug).run_server
     if args.debug:
         wsgi_app = DebuggedApplication(wsgi_app)
+        satosa_logger.setLevel(logging.DEBUG)
+        cherrypy_logger.setLevel(logging.DEBUG)
 
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',

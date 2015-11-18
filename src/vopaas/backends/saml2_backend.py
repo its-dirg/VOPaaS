@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+"""
+Base module for all saml2 backends for VOPaaS
+"""
 import logging
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from saml2.extension.ui import NAMESPACE as UI_NAMESPACE
@@ -10,11 +12,24 @@ logger = logging.getLogger(__name__)
 
 class VOPaaSSamlBackend(SamlBackend, VOPaaSBackendModule):
     def start_auth(self, context, request_info):
+        """
+        Instead of using a discovery service, the target entity id is received from the
+        VOPaaS frontend module.
+
+        See super class satosa.backends.saml2.SamlBackend#start_auth
+        :type context: satosa.context.Context
+        :type request_info: satosa.internal_data.InternalRequest
+        :rtype: satosa.response.Response
+        """
         entity_id = context.internal_data["vopaas.target_entity_id"]
         entity_id = urlsafe_b64decode(entity_id).decode("utf-8")
         return self.authn_request(context, entity_id, request_info)
 
     def get_metadata_desc(self):
+        """
+        See super class vopaas.backends.backend_base.VOPaaSBackendModule#get_metadata_desc
+        :rtype: vopaas.metadata_creation.description.MetadataDescription
+        """
         # TODO Only get IDPs
         metadata_desc = []
         for metadata_file in self.sp.metadata.metadata:

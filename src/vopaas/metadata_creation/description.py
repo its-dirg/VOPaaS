@@ -1,8 +1,14 @@
+"""
+Help classes for creating the VOPaaS frontend metadata
+"""
 from satosa.image_converter import convert_to_base64
 
 __author__ = 'mathiashedstrom'
 
 class ContactPersonDesc(object):
+    """
+    Description class for a contact preson
+    """
     def __init__(self):
         self.contact_type = None
         self._email_address = []
@@ -39,6 +45,9 @@ class ContactPersonDesc(object):
 
 
 class UIInfoDesc(object):
+    """
+    Description class for UI info
+    """
     def __init__(self):
         self._description = []
         self._display_name = []
@@ -71,6 +80,11 @@ class UIInfoDesc(object):
     def add_logo(self, text, width, height, lang):
         """
         Binds a logo to the given language
+        :type text: str
+        :type width: str
+        :type height: str
+        :type lang: str
+
         :param text: Path to logo
         :param width: width of logo
         :param height: height of logo
@@ -97,6 +111,9 @@ class UIInfoDesc(object):
 
 
 class OrganizationDesc(object):
+    """
+    Description class for an organization
+    """
     def __init__(self):
         self._display_name = []
         self._name = []
@@ -105,6 +122,8 @@ class OrganizationDesc(object):
     def add_display_name(self, name, lang):
         """
         Binds a display name to the given language
+        :type name: str
+        :type lang: str
         :param name: display name
         :param lang: language
         """
@@ -113,6 +132,8 @@ class OrganizationDesc(object):
     def add_name(self, name, lang):
         """
         Binds a name to the given language
+        :type name: str
+        :type lang: str
         :param name: Name of the organization
         :param lang: language
         """
@@ -121,6 +142,8 @@ class OrganizationDesc(object):
     def add_url(self, url, lang):
         """
         Binds an url to the given language
+        :type url: str
+        :type lang: str
         :param url: url to bind
         :param lang: language
         """
@@ -144,6 +167,9 @@ class OrganizationDesc(object):
 
 
 class MetadataDescription(object):
+    """
+    Description class for a backend module
+    """
     def __init__(self, entity_id):
         self.entity_id = entity_id
         self._organization = None
@@ -181,7 +207,7 @@ class MetadataDescription(object):
         """
         Returns a dictionary representation of the MetadataDescription object.
         The format is the same as a pysaml2 configuration
-        :rtype: dict[str, str]
+        :rtype: dict[str, Any]
         :return: A dictionary representation
         """
         description = {}

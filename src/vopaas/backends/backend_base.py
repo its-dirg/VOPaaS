@@ -1,3 +1,6 @@
+"""
+Base module for the VOPaaS backend modules
+"""
 from base64 import urlsafe_b64encode
 from satosa.backends.base import BackendModule
 from vopaas.metadata_creation.description import MetadataDescription, ContactPersonDesc, OrganizationDesc, UIInfoDesc
@@ -6,11 +9,29 @@ __author__ = 'mathiashedstrom'
 
 
 class VOPaaSBackendModule(BackendModule):
+    """
+    Base class for VOPaaS backend modules
+    """
     def get_metadata_desc(self):
+        """
+        Returns a description of the backend module.
+        This is used when creating the VOPaaS frontend metadata
+        :rtype: vopaas.metadata_creation.description.MetadataDescription
+        :return: A description of the backend
+        """
         raise NotImplementedError()
 
 
 def get_metadata_desc_for_oidc_backend(config, entity_id=None):
+    """
+    Returns a description of an VOPaaSOpenIdBackend
+    :type config: dict[str, Any]
+    :type entity_id: str
+    :rtype: vopaas.metadata_creation.description.MetadataDescription
+    :param config: The VOPaaSOpenIdBackend module config
+    :param entity_id: If entity_id is None, the id will be retrieved from the config
+    :return: A description
+    """
     metadata_description = []
     if entity_id is None:
         entity_id = config["op_url"]

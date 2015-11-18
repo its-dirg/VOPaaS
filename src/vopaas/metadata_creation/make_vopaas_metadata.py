@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# =============================================================================
+# Script that creates a VOPaaS proxy metadata file from a SATOSAConfig file
+# =============================================================================
 import argparse
 import copy
 import logging
@@ -29,9 +32,6 @@ from satosa.plugin_base.endpoint import BackendModulePlugin, FrontendModulePlugi
 from satosa.plugin_loader import backend_filter, _load_plugins, _load_endpoint_modules, frontend_filter
 from satosa.satosa_config import SATOSAConfig
 from vopaas.frontends.saml2_frontend import VOPaaSSamlFrontend
-# =============================================================================
-# Script that creates a VOPaaS proxy metadata file from a SATOSAConfig file
-# =============================================================================
 
 LOGGER = logging.getLogger("")
 handler = logging.StreamHandler()
@@ -58,6 +58,15 @@ ONTS = {
 
 
 def create_combined_metadata(metadata_files):
+    """
+    Combines metadata str to one str
+
+    :type metadata_files: list[str]
+    :rtype: str
+
+    :param metadata_files: All metadata that should be combined
+    :return: A combined metadata str
+    """
     mds = MetadataStore(ONTS.values(), None, None)
     key = 1
     for data in metadata_files:
@@ -71,6 +80,17 @@ def create_combined_metadata(metadata_files):
 
 
 def _make_metadata(config_dict, option):
+    """
+    Creates metadata from the given idp config
+
+    :type config_dict: dict[str, Any]
+    :type option: vopaas.metadata_creation.make_vopaas_metadata.MetadataOption
+    :rtype: str
+
+    :param config_dict: Frontend IDP config
+    :param option: metadata creation settings
+    :return: A xml string
+    """
     eds = []
     cnf = Config()
     cnf.load(copy.deepcopy(config_dict), metadata_construction=True)
@@ -105,7 +125,24 @@ def _make_metadata(config_dict, option):
             return xmldoc
 
 
-def create_config_file(frontend_config, frontend_endpoints, url_base, metadata_desc, name):
+def create_config_file(frontend_config, frontend_endpoints, url_base, metadata_desc, backend_name):
+    """
+    Returns a copy of the frontend_config updated with the given metadata_desc
+
+    :type frontend_config: dict[str, Any]
+    :type frontend_endpoints: dict[str, dict[str, str]]
+    :type url_base: str
+    :type metadata_desc: vopaas.metadata_creation.description.MetadataDescription
+    :type backend_name: str
+    :rtype: dict[str, Any]
+
+    :param frontend_config: Frontend idp config
+    :param frontend_endpoints: Frontend endpoints
+    :param url_base: proxy base url
+    :param metadata_desc: one metadata description of a backend
+    :param backend_name: backend name
+    :return: An updated frontend idp config
+    """
     cnf = copy.deepcopy(frontend_config)
     metadata_desc = metadata_desc.to_dict()
     proxy_id = cnf["entityid"]
@@ -114,12 +151,20 @@ def create_config_file(frontend_config, frontend_endpoints, url_base, metadata_d
     cnf = _join_dict(cnf, metadata_desc)
 
     # TODO Only supports the VOPaaSSaml2Frontend
-    cnf = VOPaaSSamlFrontend._load_endpoints_to_config(cnf, frontend_endpoints, url_base, name, entity_id)
+    cnf = VOPaaSSamlFrontend._load_endpoints_to_config(cnf, frontend_endpoints, url_base, backend_name, entity_id)
     cnf = VOPaaSSamlFrontend._load_entity_id_to_config(proxy_id, entity_id, cnf)
     return cnf
 
 
 def _join_dict(dict_a, dict_b):
+    """
+    Joins two dicts
+    :type dict_a: dict[Any, Any]
+    :type dict_b: dict[Any, Any]
+    :param dict_a: base dict
+    :param dict_b: overriding dict
+    :return: A joined dict
+    """
     for key, value in dict_b.items():
         if key not in dict_a:
             dict_a[key] = value
@@ -131,6 +176,11 @@ def _join_dict(dict_a, dict_b):
 
 
 def make_vopaas_metadata(option):
+    """
+    Creates metadata files from a VOPaaS proxy config
+    :type option: vopaas.metadata_creation.make_vopaas_metadata.MetadataOption
+    :param option: The creation settings
+    """
     conf_mod = SATOSAConfig(option.config_file)
 
     frontend_plugins = _load_plugins(conf_mod.PLUGIN_PATH, conf_mod.FRONTEND_MODULES, frontend_filter,
@@ -180,8 +230,32 @@ def make_vopaas_metadata(option):
 
 
 class MetadataOption(object):
+    """
+    Class that holds teh settings for the metadata creation
+    """
     def __init__(self, config_file, valid=None, cert=None, id=None, keyfile=None, name="", sign=None, xmlsec=None,
                  output=None):
+        """
+        :type config_file: str
+        :type valid: str
+        :type cert: str
+        :type id: str
+        :type keyfile: str
+        :type name: str
+        :type sign: bool
+        :type xmlsec: str
+        :type output: str
+
+        :param config_file: Path to VOPaaS proxy config file
+        :param valid: How long, in days, the metadata is valid from the time of creation
+        :param cert: Path to cert file
+        :param id: The ID of the entities descriptor
+        :param keyfile: A file with a key to sign the metadata with
+        :param name: entities name
+        :param sign: sign the metadata
+        :param xmlsec: xmlsec binaries to be used for the signing
+        :param output: Where to write metadata files
+        """
         self.config_file = config_file
         self.valid = int(valid) * 24 if valid else 0
         self.cert = cert
@@ -210,7 +284,7 @@ if __name__ == '__main__':
                         help="sign the metadata")
     parser.add_argument('-x', dest='xmlsec',
                         help="xmlsec binaries to be used for the signing")
-    parser.add_argument('-o', dest='output', default=".")
+    parser.add_argument('-o', dest='output', default=".", help="Where to write metadata files")
     parser.add_argument(dest="config", nargs='+')
     args = parser.parse_args()
 
