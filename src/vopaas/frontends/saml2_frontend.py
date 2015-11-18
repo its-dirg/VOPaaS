@@ -3,7 +3,6 @@ import copy
 import logging
 from saml2.config import IdPConfig
 from saml2.server import Server
-from satosa import service
 from satosa.frontends.saml2 import SamlFrontend
 from urllib.parse import urlparse
 
@@ -53,8 +52,8 @@ class VOPaaSSamlFrontend(SamlFrontend):
         idp = self._load_idp_dynamic_endpoints(context)
         return self._handle_authn_request(context, binding_in, idp)
 
-    def save_state(self, context, _dict, _request, idp):
-        state = super(VOPaaSSamlFrontend, self).save_state(context, _dict, _request, idp)
+    def save_state(self, context, resp_args, relay_state):
+        state = super(VOPaaSSamlFrontend, self).save_state(context, resp_args, relay_state)
         state["proxy_idp_entityid"] = self._get_target_entity_id(context)
         return state
 
@@ -79,8 +78,8 @@ class VOPaaSSamlFrontend(SamlFrontend):
                 valid_providers = valid_providers.lstrip("|")
                 parsed_endp = urlparse(endp)
                 url_map.append(("(%s)/[\s\S]+/%s$" % (valid_providers, parsed_endp.path),
-                                (self.handle_authn_request, service.BINDING_MAP[binding])))
+                                (self.handle_authn_request, binding)))
                 url_map.append(("(%s)/[\s\S]+/%s/(.*)$" % (valid_providers, parsed_endp.path),
-                                (self.handle_authn_request, service.BINDING_MAP[binding])))
+                                (self.handle_authn_request, binding)))
 
         return url_map

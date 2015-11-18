@@ -11,7 +11,7 @@ from saml2.httputil import Unauthorized
 from satosa.satosa_config import SATOSAConfig
 from satosa.base import SATOSABase
 from satosa.context import Context
-from satosa.service import unpack_either
+from satosa.util import unpack_either
 
 LOGFILE_NAME = 'vopaas.log'
 base_formatter = logging.Formatter("[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s")
