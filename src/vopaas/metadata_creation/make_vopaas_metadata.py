@@ -285,15 +285,11 @@ if __name__ == '__main__':
     parser.add_argument('-x', dest='xmlsec',
                         help="xmlsec binaries to be used for the signing")
     parser.add_argument('-o', dest='output', default=".", help="Where to write metadata files")
-    parser.add_argument(dest="config", nargs='+')
+    parser.add_argument(dest="config")
     args = parser.parse_args()
 
-    for filespec in args.config:
-        bas, fil = os.path.split(filespec)
-        if bas != "":
-            sys.path.insert(0, bas)
-        LOGGER.info("Generating metadata for proxy config: '{}'".format(fil))
-        option = MetadataOption(fil, args.valid, args.cert, args.id, args.keyfile, args.name, args.sign, args.xmlsec,
-                                args.output)
-        LOGGER.info("Settings: {}".format(option))
-        make_vopaas_metadata(option)
+    LOGGER.info("Generating metadata for proxy config: '{}'".format(args.config))
+    option = MetadataOption(args.config, args.valid, args.cert, args.id, args.keyfile, args.name, args.sign, args.xmlsec,
+                            args.output)
+    LOGGER.info("Settings: {}".format(option))
+    make_vopaas_metadata(option)
