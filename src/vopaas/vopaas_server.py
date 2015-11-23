@@ -96,7 +96,7 @@ def main():
     sys.path.insert(0, os.getcwd())
 
     server_config = SATOSAConfig(args.proxy_config)
-    wsgi_app = WsgiApplication(server_config, args.debug).run_server
+    wsgi_app = WsgiApplication(server_config).run_server
     if args.debug:
         wsgi_app = DebuggedApplication(wsgi_app)
         satosa_logger.setLevel(logging.DEBUG)
