@@ -68,7 +68,7 @@ class OpenidPlugin(BackendModulePlugin):
                     "description": [("This is a test OP", "en")],
                     "logo": [
                         {
-                            "url": "https://inacademia.org/static/logo.png",
+                            "url": "",
                             "width": "120",
                             "height": "60",
                             "lang": "en"

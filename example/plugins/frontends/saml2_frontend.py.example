@@ -9,8 +9,6 @@ from saml2.saml import NAMEID_FORMAT_TRANSIENT
 from saml2.saml import NAMEID_FORMAT_PERSISTENT
 from vopaas.frontends.saml2_frontend import VOPaaSSamlFrontend
 
-__author__ = 'mathiashedstrom'
-
 
 def full_path(local_file):
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -61,7 +59,7 @@ class Saml2FrontendModulePlugin(FrontendModulePlugin):
             "key_file": full_path("../../pki/new_server.key"),
             "cert_file": full_path("../../pki/new_server.crt"),
             "metadata": {
-                "local": ["/Users/mathiashedstrom/work/DIRG/pysaml2/example/sp-wsgi/sp.xml"],
+                "local": [],
             },
             # This database holds the map between a subjects local identifier and
             # the identifier returned to a SP
