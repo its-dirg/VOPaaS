@@ -113,20 +113,6 @@ def main():
             'server.ssl_certificate_chain': server_config.CERT_CHAIN,
         })
 
-    cherrypy.tree.mount(None, '/static', {
-        '/': {
-            'tools.staticdir.dir': server_config.STATIC_DIR,
-            'tools.staticdir.on': True,
-        }
-    })
-    cherrypy.tree.mount(None, '/robots.txt', {
-        '/': {
-            'tools.staticfile.on': True,
-            'tools.staticfile.filename': os.path.join(server_config.STATIC_DIR,
-                                                      "robots.txt")
-
-        }
-    })
 
     cherrypy.tree.graft(SessionMiddleware(wsgi_app, server_config.SESSION_OPTS),
                         '/')
