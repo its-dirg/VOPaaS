@@ -1,4 +1,4 @@
-git+https://github.com/its-dirg/pysaml2@b3e13a41ce4508a8c95174ab1e488e97127ce7ae
+git+https://github.com/its-dirg/pysaml2@c681f89b3e5858e29d09accc1ac2f8a3f7e58bc7
 git+https://github.com/its-dirg/satosa@0cc3f87d63ae6872d71370fc780f72896fa3430a
 CherryPy==3.8.0
 Beaker==1.7.0
