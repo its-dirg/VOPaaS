@@ -78,7 +78,7 @@ def get_metadata_desc_for_oidc_backend(config, entity_id=None):
             for name in ui_info.get("display_name", []):
                 ui_description.add_display_name(name[0], name[1])
             for logo in ui_info.get("logo", []):
-                ui_description.add_logo(logo["url"], logo["width"], logo["height"], logo["lang"])
+                ui_description.add_logo(logo["image"], logo["width"], logo["height"], logo["lang"])
 
             description.set_ui_info(ui_description)
 
