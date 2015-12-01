@@ -1,5 +1,5 @@
 git+https://github.com/its-dirg/pysaml2@c681f89b3e5858e29d09accc1ac2f8a3f7e58bc7
-git+https://github.com/its-dirg/satosa@d15ca379b268325796856dc9b046971f7021770f
+git+https://github.com/its-dirg/satosa@0d26631be04af516d0c407ebf80dd59fc41eedd9
 git+https://github.com/rohe/pyjwkest.git@6928cc9c4490389b91e064422e1fe2a7ad7cf5c8#egg=pyjwkest
 git+https://github.com/its-dirg/pyoidc.git@4ad7333d4afa0f2da82fdc761d8086a603f52597#egg=oic
 CherryPy==3.8.0
