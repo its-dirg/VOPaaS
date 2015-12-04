@@ -21,28 +21,34 @@ LOGFILE_NAME = 'vopaas.log'
 base_formatter = logging.Formatter("[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s")
 
 
-#https://docs.python.org/2/library/logging.handlers.html
-#http://stackoverflow.com/questions/3968669/how-to-configure-logging-to-syslog-in-python
-#Can be logged with import syslog as well.
-#satosa_stats = logging.getLogger("satosa_stats")
-#Linux#hdlr = SysLogHandler("/dev/log")
-#OS X#
-#hdlr = SysLogHandler("/var/run/syslog")
-#hdlr.setFormatter(base_formatter)
-#satosa_stats.addHandler(hdlr)
-#satosa_stats.setLevel(logging.INFO)
+# https://docs.python.org/2/library/logging.handlers.html
+# http://stackoverflow.com/questions/3968669/how-to-configure-logging-to-syslog-in-python
+# Can be logged with import syslog as well.
+# satosa_stats = logging.getLogger("satosa_stats")
+# Linux#hdlr = SysLogHandler("/dev/log")
+# OS X#
+# hdlr = SysLogHandler("/var/run/syslog")
+# hdlr.setFormatter(base_formatter)
+# satosa_stats.addHandler(hdlr)
+# satosa_stats.setLevel(logging.INFO)
 
-satosa_logger = logging.getLogger("satosa")
 hdlr = logging.FileHandler(LOGFILE_NAME)
 hdlr.setFormatter(base_formatter)
-satosa_logger.addHandler(hdlr)
-satosa_logger.setLevel(logging.INFO)
+
+loggers = []
+for logger_name in ["satosa", "vopaas"]:
+    logger = logging.getLogger(logger_name)
+    logger.addHandler(hdlr)
+    logger.setLevel(logging.INFO)
+    loggers.append(logger)
 
 cherrypy_logger = logging.getLogger("cherrypy")
 hdlr = logging.FileHandler("cherrypy.log")
 hdlr.setFormatter(base_formatter)
 cherrypy_logger.addHandler(hdlr)
 cherrypy_logger.setLevel(logging.INFO)
+
+loggers.append(cherrypy_logger)
 
 
 class WsgiApplication(SATOSABase):
@@ -99,8 +105,8 @@ def main():
     wsgi_app = WsgiApplication(server_config).run_server
     if args.debug:
         wsgi_app = DebuggedApplication(wsgi_app)
-        satosa_logger.setLevel(logging.DEBUG)
-        cherrypy_logger.setLevel(logging.DEBUG)
+        for log in loggers:
+            log.setLevel(logging.DEBUG)
 
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
@@ -112,7 +118,6 @@ def main():
             'server.ssl_private_key': server_config.SERVER_KEY,
             'server.ssl_certificate_chain': server_config.CERT_CHAIN,
         })
-
 
     cherrypy.tree.graft(SessionMiddleware(wsgi_app, server_config.SESSION_OPTS),
                         '/')

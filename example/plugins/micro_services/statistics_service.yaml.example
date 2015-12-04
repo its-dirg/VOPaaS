@@ -1,0 +1,6 @@
+module: vopaas.micro_service..statistics_service.StatisticsService
+plugin: ResponseMicroService
+config:
+  rest_uri: "https://127.0.0.1:8168"
+  signing_key: "pki/mykey.pem"
+  verify_ssl: No
