@@ -89,6 +89,33 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 * Technical requirement: Any SP connecting to the proxy must provide an `mdui:DisplayName` in the metadata. **TODO can we expect this or should we have a fallback when fetching the `requester_name` to send to the consent service?**
 
 
+# Metadata
+
+## Generate proxy frontend metadata
+The script **make_vopaas_metadata.py \<proxy_config_path\>** will generate metadata files for the 
+proxy frontend. Each file represents one of the target IDP/OP and contains some gui information 
+about the original IDP/OP.
+In the case of IDP, the gui information is retrieved from the IDPs original metadata. For OP, the
+information is manually added in the openid backend configuration and is retrieved by the script.
+
+### Arguments to script:
+positional arguments:
+
+    proxy_config_path
+
+optional arguments:
+
+    -h, --help  show this help message and exit
+    -v VALID    How long, in days, the metadata is valid from the time of
+              creation
+    -c CERT     certificate
+    -i ID       The ID of the entities descriptor
+    -k KEYFILE  A file with a key to sign the metadata with
+    -n NAME
+    -s          sign the metadata
+    -x XMLSEC   xmlsec binaries to be used for the signing
+    -o OUTPUT   Where to write metadata files
+
 # State
 
 The VOPaaS adds the following additional information to the [SATOSA state cookie](https://github.com/its-dirg/SATOSA/blob/master/doc/internals/state.md): 
