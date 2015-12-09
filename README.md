@@ -87,3 +87,32 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 # Service Provider requirements
 
 * Technical requirement: Any SP connecting to the proxy must provide an `mdui:DisplayName` in the metadata. **TODO can we expect this or should we have a fallback when fetching the `requester_name` to send to the consent service?**
+
+
+# State
+
+The VOPaaS adds the following additional information to the [SATOSA state cookie](https://github.com/its-dirg/SATOSA/blob/master/doc/internals/state.md): 
+
+## Frontends
+
+### VOPaaSSamlFrontend
+
+* **proxy_idp_entityid**: Which entity id the proxy will answer as, when sending the authentication 
+response back to the calling SP.
+* **relay_state**: The relay state given by the SP request
+* **resp_args.in_response_to**: The id of the request
+* **resp_args.binding**: Which binding type to use
+* **resp_args.sp_entity_id**: Entity id of the calling SP
+* **resp_args.name_id_policy**: The SAML2 name id policy
+
+## Backends
+
+### VOPaaSSamlBackend
+
+Only saves the relay state for the backend-IDP request.
+
+### VOPaaSOpenIdBackend
+TODO
+
+### VOPaaSOFacebookBackend
+TODO
