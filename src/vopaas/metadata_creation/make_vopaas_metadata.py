@@ -206,17 +206,21 @@ def make_vopaas_metadata(option):
             LOGGER.info("Creating metadata for frontend '{}' and backend '{}'".format(frontend.name, provider))
             meta_desc = backend_modules[provider].get_metadata_desc()
             for desc in meta_desc:
+                xml = _make_metadata(
+                    create_config_file(frontend_config, frontend_endpoints, url_base, desc, provider),
+                    option
+                )
                 metadata[frontend.name].append(
-                    _make_metadata(
-                        create_config_file(frontend_config, frontend_endpoints, url_base, desc, provider), option))
+                    {"xml": xml, "plugin_name": plugin.name, "entity_id": desc.entity_id}
+                )
 
     for frontend in metadata:
         front = 0
         for meta in metadata[frontend]:
-            path = "{}/proxy_front{}_metadata.xml".format(args.output, front)
+            path = "{}/{}_{}.xml".format(args.output, meta["plugin_name"], meta["entity_id"])
             LOGGER.info("Writing metadata '{}".format(path))
             out_file = open(path, 'w')
-            out_file.write(meta)
+            out_file.write(meta["xml"])
             out_file.close()
             front += 1
 
