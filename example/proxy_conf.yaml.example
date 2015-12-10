@@ -7,11 +7,14 @@ INTERNAL_ATTRIBUTES: 'example/internal_attributes.yaml'
 PLUGIN_PATH:
   - "example/plugins/backends"
   - "example/plugins/frontends"
+  - "example/plugins/micro_services"
 BACKEND_MODULES:
   - "oidc_backend"
   - "saml2_backend"
 FRONTEND_MODULES:
   - "saml2_frontend"
+MICRO_SERVICES:
+  - "statistics_service.yaml"
 USER_ID_HASH_SALT: "61a89d2db0b9e1e27d490d050b478fe71f352fddd3528a44157f43e339c6c62d96172bf84233317"
 #--- Server Config ---#
 SERVER_CERT: "pki/server.crt"
