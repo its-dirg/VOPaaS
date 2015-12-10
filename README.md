@@ -91,6 +91,10 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 
 # Metadata
 
+In addition to generating the proxy metadata with the [SATOSA `make_saml_metadata.py` script](https://github.com/its-dirg/SATOSA/tree/master/doc#metadata), 
+metadata for all backends must be generated to mirror the backing providers defined in the backend
+plugins.
+
 ## Generate proxy frontend metadata
 The script **make_vopaas_metadata.py \<proxy_config_path\>** will generate metadata files for the 
 proxy frontend. Each file represents one of the target IDP/OP and contains some gui information 
