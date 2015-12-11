@@ -1,0 +1,34 @@
+module: vopaas.backends.saml2_backend.VOPaaSSamlBackend
+name: Saml2SP
+plugin: BackendModulePlugin
+
+config:
+  config:
+    organization: {display_name: Example Identities, name: Example Identities Org., url: 'https://www.example.com'}
+    contact_person:
+      - {contact_type: technical, email_address: technical@example.com, given_name: Technical}
+      - {contact_type: support, email_address: support@example.com, given_name: Support}
+
+    key_file: "pki/new_server.key"
+    cert_file: "pki/new_server.crt"
+
+    metadata:
+      local: [metadata/idp.xml]
+
+    entityid: <base_url>/<name>/proxy_saml2_backend.xml
+    service:
+      sp:
+        allow_unsolicited: true
+        endpoints:
+          assertion_consumer_service:
+            - [<base_url>/<name>/acs/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+            - [<base_url>/<name>/acs/redirect, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect']
+
+    xmlsec_binary: /usr/bin/xmlsec1
+
+    logger:
+      loglevel: debug
+      rotating: {backupCount: 5, filename: sp.log, maxBytes: 500000}
+
+  state_id: <name>
+  publish_metadata: <base_url>/<name>/metadata
