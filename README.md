@@ -84,6 +84,18 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 
 **TODO set sane defaults for `fields` in vopaas example/default FB config**
 
+## Statistics micro service
+
+Configuration parameters:
+
+| Parameter name | Data type | Example values | Description |
+| -------------- | --------- | -------------- | ----------- |
+| `module` | string | `vopaas.micro_service.statistics_service.StatisticsService` | the python micro service module to import |
+| `plugin` | string | `ResponseMicroService` | whether this is a response or a request micro service | 
+| `config.rest_uri` | string | `https://127.0.0.1:8168` | url to the REST endpoint of the service |
+| `config.signing_key` | string | `pki/statistics.key` | path to key used for signing the request to the service |
+| `config.verify_ssl` | bool | `No` | whether the HTTPS certificate of the service should be verified when doing requests to it |
+
 # Service Provider requirements
 
 * Technical requirement: Any SP connecting to the proxy must provide an `mdui:DisplayName` in the metadata. **TODO can we expect this or should we have a fallback when fetching the `requester_name` to send to the consent service?**
