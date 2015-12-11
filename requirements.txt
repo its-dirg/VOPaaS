@@ -1,7 +1,2 @@
-git+https://github.com/its-dirg/pysaml2@c681f89b3e5858e29d09accc1ac2f8a3f7e58bc7
-git+https://github.com/its-dirg/satosa@c75c96fb74f215addc012689568b13860f734ea0
-git+https://github.com/rohe/pyjwkest.git@6928cc9c4490389b91e064422e1fe2a7ad7cf5c8#egg=pyjwkest
-git+https://github.com/its-dirg/pyoidc.git@4ad7333d4afa0f2da82fdc761d8086a603f52597#egg=oic
-CherryPy==3.8.0
-Beaker==1.7.0
-Werkzeug==0.10.4
+git+https://github.com/rohe/pysaml2.git@e6151b5#egg=pysaml2
+git+https://github.com/its-dirg/satosa@3e3dae660ca03e4d6262d0bb4ce1d8d139a71bbc

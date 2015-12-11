@@ -1,8 +1,5 @@
 #--- SATOSA Config ---#
-HOST: "127.0.0.1"
-PORT: 8092
 BASE: "https://example.com"
-HTTPS: Yes
 INTERNAL_ATTRIBUTES: 'example/internal_attributes.yaml'
 PLUGIN_PATH:
   - "example/plugins/backends"
@@ -16,10 +13,8 @@ FRONTEND_MODULES:
 MICRO_SERVICES:
   - "statistics_service.yaml"
 USER_ID_HASH_SALT: "61a89d2db0b9e1e27d490d050b478fe71f352fddd3528a44157f43e339c6c62d96172bf84233317"
-#--- Server Config ---#
-SERVER_CERT: "pki/server.crt"
-SERVER_KEY: "pki/server.key"
-CERT_CHAIN: Null
+COOKIE_STATE_NAME: "vopaas_state"
+STATE_ENCRYPTION_KEY: "vopaas_enc_key dev"
 CONSENT:
   enable: Yes
   rest_uri: "https://localhost:8166"
@@ -34,11 +29,32 @@ ACCOUNT_LINKING:
   endpoint: "handle_account_linking"
   sign_key: "pki/account_linking.key"
   verify_ssl: No
-# Beaker session configuration
-# This session can be configured to use database, file, or memory
-SESSION_OPTS:
-    session.type: "memory"
-    session.cookie_expires: Yes  # Expire when the session is closed
-    session.auto: Yes
-COOKIE_STATE_NAME: "vopaas_state"
-STATE_ENCRYPTION_KEY: "vopaas_enc_key dev"
+LOGGING:
+  version: 1
+  formatters:
+    standard:
+      format: "[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s"
+  handlers:
+    default:
+      level: "INFO"
+      class: "logging.FileHandler"
+      filename: "vopaas.log"
+      formatter: "standard"
+  loggers:
+    satosa:
+      handlers: ["default"]
+      level: "INFO"
+      propagate: Yes
+    vopaas:
+      handlers: ["default"]
+      level: "INFO"
+      propagate: Yes
+    saml:
+      handlers: ["default"]
+      level: "WARN"
+      propagate: Yes
+    oic:
+      handlers: ["default"]
+      level: "WARN"
+      propagate: Yes
+

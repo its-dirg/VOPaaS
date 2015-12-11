@@ -8,8 +8,8 @@ from jwkest.jws import JWS
 import requests
 from satosa.context import Context
 from satosa.internal_data import InternalResponse
-from satosa.logging import satosa_logging
-from satosa.micro_service.service_base import ResponseMicroService, RequestMicroService
+from satosa.logging_util import satosa_logging
+from satosa.micro_service.service_base import ResponseMicroService
 
 LOGGER = logging.getLogger(__name__)
 
