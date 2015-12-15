@@ -1,4 +1,4 @@
-module: vopaas.frontends.saml2_frontend.VOPaaSSamlFrontend
+module: satosa.frontends.saml2.SamlMirrorFrontend
 plugin: FrontendModulePlugin
 name: Saml2IDP
 
@@ -24,7 +24,7 @@ config:
             name_form: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
         subject_data: idp_subject_data
 
-    xmlsec_binary: "{{ xmlsec_binary }}"
+    xmlsec_binary: "/usr/bin/xmlsec1"
 
     logger:
       loglevel: info

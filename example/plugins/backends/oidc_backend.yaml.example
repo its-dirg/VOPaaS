@@ -1,4 +1,4 @@
-module: vopaas.backends.oidc_backend.VOPaaSOpenIdBackend
+module: satosa.backends.openid_connect.OpenIdBackend
 name: openid_connect
 plugin: BackendModulePlugin
 

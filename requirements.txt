@@ -1,2 +1,1 @@
-git+https://github.com/rohe/pysaml2.git@e6151b5#egg=pysaml2
-git+https://github.com/its-dirg/satosa@3e3dae660ca03e4d6262d0bb4ce1d8d139a71bbc
+git+https://github.com/its-dirg/satosa@3a36469736c30dcf391674ccd2768355a894109a

@@ -1,4 +1,4 @@
-module: vopaas.backends.saml2_backend.VOPaaSSamlBackend
+module: satosa.backends.saml2.SamlBackend
 name: Saml2SP
 plugin: BackendModulePlugin
 

@@ -1,4 +1,0 @@
-"""
-Python package file
-"""
-
