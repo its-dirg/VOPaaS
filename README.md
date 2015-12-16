@@ -86,6 +86,8 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 
 ## Statistics micro service
 
+To collect anonymous statistics about which SP and IdP combination the end users use in the [statistics service](https://github.com/its-dirg/vopaas_statistics), the statistics micro service must be configured in VOPaaS.
+
 Configuration parameters:
 
 | Parameter name | Data type | Example values | Description |
