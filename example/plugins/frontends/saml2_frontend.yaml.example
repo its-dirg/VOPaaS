@@ -1,38 +1,35 @@
-module: satosa.frontends.saml2.SamlMirrorFrontend
-plugin: FrontendModulePlugin
-name: Saml2IDP
-
 config:
   idp_config:
+    organization: {display_name: Example Identities, name: Example Identities Org., url: 'http://www.example.com'}
+    contact_person:
+    - {contact_type: technical, email_address: technical@example.com, given_name: Technical}
+    - {contact_type: support, email_address: support@example.com, given_name: Support}
     key_file: "pki/new_server.key"
     cert_file: "pki/new_server.crt"
     metadata:
-      local: [metadata/sp.xml]
+      local: [sp.xml]
 
-    entityid: <base_url>/<name>/vopaas_proxy.xml
+    entityid: <base_url>/<name>/proxy.xml
     service:
       idp:
-        want_authn_requests_signed: false
         endpoints:
-          single_sign_on_service: [] # Leave this empty, the endpoints will be added dynamically when registering endpoints in the module
-        name_id_format: ['urn:oasis:names:tc:SAML:2.0:nameid-format:persistent']
+          single_sign_on_service: []
+        name: Proxy IdP
+        name_id_format: ['urn:oasis:names:tc:SAML:2.0:nameid-format:persistent', 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient']
         policy:
           default:
             attribute_restrictions: null
             fail_on_missing_requested: false
             lifetime: {minutes: 15}
             name_form: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
-        subject_data: idp_subject_data
-
-    xmlsec_binary: "/usr/bin/xmlsec1"
-
-    logger:
-      loglevel: info
-      rotating: {backupCount: 5, filename: idp.log, maxBytes: 500000}
-
+        subject_data: ./idp.subject
+        want_authn_requests_signed: false
+    xmlsec_binary: /usr/bin/xmlsec1
   state_id: <name>
   base: <base_url>
   endpoints:
-    single_sign_on_service:
-      'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST': sso/post
-      'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect': sso/redirect
+    single_sign_on_service: {'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST': sso/post,
+      'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect': sso/redirect}
+module: satosa.frontends.saml2.SamlMirrorFrontend
+plugin: FrontendModulePlugin
+name: Saml2IDP

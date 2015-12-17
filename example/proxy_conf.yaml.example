@@ -1,10 +1,12 @@
 #--- SATOSA Config ---#
-BASE: "https://example.com"
-INTERNAL_ATTRIBUTES: 'example/internal_attributes.yaml'
+BASE: https://example.com
+INTERNAL_ATTRIBUTES: "internal_attributes.yaml"
+COOKIE_STATE_NAME: "SATOSA_STATE"
+STATE_ENCRYPTION_KEY: "asdASD123"
 PLUGIN_PATH:
-  - "example/plugins/backends"
-  - "example/plugins/frontends"
-  - "example/plugins/micro_services"
+  - "plugins/backends"
+  - "plugins/frontends"
+  - "plugins/micro_services"
 BACKEND_MODULES:
   - "oidc_backend"
   - "saml2_backend"
@@ -13,14 +15,13 @@ FRONTEND_MODULES:
 MICRO_SERVICES:
   - "statistics_service.yaml"
 USER_ID_HASH_SALT: "61a89d2db0b9e1e27d490d050b478fe71f352fddd3528a44157f43e339c6c62d96172bf84233317"
-COOKIE_STATE_NAME: "vopaas_state"
-STATE_ENCRYPTION_KEY: "vopaas_enc_key dev"
 CONSENT:
   enable: Yes
-  rest_uri: "https://localhost:8166"
+  rest_uri: "https://127.0.0.1:8166"
   redirect: "https://localhost:8166/consent"
   endpoint: "handle_consent"
-  sign_key: "pki/consent.key"
+  sign_key: "pki/mykey.pem"
+  state_enc_key: "7D1ZGckfoiQfxvsK3DLCQFGutA6KM0ZzoSnzB"
   verify_ssl: No
 ACCOUNT_LINKING:
   enable: Yes
@@ -32,29 +33,27 @@ ACCOUNT_LINKING:
 LOGGING:
   version: 1
   formatters:
-    standard:
+    simple:
       format: "[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s"
   handlers:
-    default:
-      level: "INFO"
-      class: "logging.FileHandler"
-      filename: "vopaas.log"
-      formatter: "standard"
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+    info_file_handler:
+      class: logging.handlers.RotatingFileHandler
+      level: INFO
+      formatter: simple
+      filename: info.log
+      maxBytes: 10485760 # 10MB
+      backupCount: 20
+      encoding: utf8
   loggers:
     satosa:
-      handlers: ["default"]
-      level: "INFO"
-      propagate: Yes
-    vopaas:
-      handlers: ["default"]
-      level: "INFO"
-      propagate: Yes
-    saml:
-      handlers: ["default"]
-      level: "WARN"
-      propagate: Yes
-    oic:
-      handlers: ["default"]
-      level: "WARN"
-      propagate: Yes
-
+      level: DEBUG
+      handlers: [console]
+      propagate: no
+  root:
+    level: INFO
+    handlers: [info_file_handler]

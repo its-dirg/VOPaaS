@@ -52,6 +52,9 @@ service provider and for which the user has given consent will be sent to the SP
         1. Restart flow
     1. If a link between the user and identity provider exists an UUID is returned
 
+<br>
+<br>
+
 # Installation
 
 1. Download this repository as a [zip file](https://github.com/its-dirg/vopaas_ansible/archive/master.zip).
@@ -61,12 +64,32 @@ service provider and for which the user has given consent will be sent to the SP
 1. **TODO Should SP's/backing IdP's read metadata from URL? (in that case we really should let a proper webserver (nginx or Apache) serve static files).
 1. **TODO specify location of generated frontend/backend metadata or make location configurable in Ansible**
 
+<br>
+<br>
 
 # Configuration
 
-See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/tree/master/doc).
+See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/tree/master/doc#configuration).
 
-## SAML2 frontend
+NOTE: Make sure that the **module** attribute in the frontend configuration file is set 
+to **satosa.frontends.saml2.SamlMirrorFrontend**
+
+## Statistics micro service
+
+To collect anonymous statistics about which SP and IdP combination the end users use in the [statistics service](https://github.com/its-dirg/vopaas_statistics), the statistics micro service must be configured in VOPaaS.
+
+Configuration parameters:
+
+| Parameter name | Data type | Example values | Description |
+| -------------- | --------- | -------------- | ----------- |
+| `module` | string | `vopaas.micro_service.statistics_service.StatisticsService` | the python micro service module to import |
+| `plugin` | string | `ResponseMicroService` | whether this is a response or a request micro service | 
+| `config.rest_uri` | string | `https://127.0.0.1:8168` | url to the REST endpoint of the service |
+| `config.signing_key` | string | `pki/statistics.key` | path to key used for signing the request to the service |
+| `config.verify_ssl` | bool | `No` | whether the HTTPS certificate of the service should be verified when doing requests to it |
+
+
+<!-- ## SAML2 frontend
 **TODO how should SP metadata be handled in production? can VOPaaS reload the specified metadata file at certain intervals or should we use MDX or something else?, see `metadata` param in table below**
 
 **TODO should there be any default "attribute_restrictions"?**
@@ -83,56 +106,27 @@ See the [SATOSA configuration instructions](https://github.com/its-dirg/SATOSA/t
 #### Facebook
 
 **TODO set sane defaults for `fields` in vopaas example/default FB config**
+-->
 
-## Statistics micro service
-
-To collect anonymous statistics about which SP and IdP combination the end users use in the [statistics service](https://github.com/its-dirg/vopaas_statistics), the statistics micro service must be configured in VOPaaS.
-
-Configuration parameters:
-
-| Parameter name | Data type | Example values | Description |
-| -------------- | --------- | -------------- | ----------- |
-| `module` | string | `vopaas.micro_service.statistics_service.StatisticsService` | the python micro service module to import |
-| `plugin` | string | `ResponseMicroService` | whether this is a response or a request micro service | 
-| `config.rest_uri` | string | `https://127.0.0.1:8168` | url to the REST endpoint of the service |
-| `config.signing_key` | string | `pki/statistics.key` | path to key used for signing the request to the service |
-| `config.verify_ssl` | bool | `No` | whether the HTTPS certificate of the service should be verified when doing requests to it |
-
-# Service Provider requirements
-
-* Technical requirement: Any SP connecting to the proxy must provide an `mdui:DisplayName` in the metadata. **TODO can we expect this or should we have a fallback when fetching the `requester_name` to send to the consent service?**
-
+<br>
+<br>
 
 # Metadata
 
-In addition to generating the proxy metadata with the [SATOSA `make_saml_metadata.py` script](https://github.com/its-dirg/SATOSA/tree/master/doc#metadata), 
-metadata for all backends must be generated to mirror the backing providers defined in the backend
-plugins.
+For more information on how to generate metadata which mirrors all the identity providers 
+defined in the backend plugins visit
+[SATOSA proxy doc](https://github.com/its-dirg/SATOSA/blob/master/doc/README.md#saml_metadata), 
 
-## Generate proxy frontend metadata
-The script **make_vopaas_metadata.py \<proxy_config_path\>** will generate metadata files for the 
-proxy frontend. Each file represents one of the target IDP/OP and contains some gui information 
-about the original IDP/OP.
-In the case of IDP, the gui information is retrieved from the IDPs original metadata. For OP, the
-information is manually added in the openid backend configuration and is retrieved by the script.
 
-### Arguments to script:
-positional arguments:
+<br>
+<br>
 
-    proxy_config_path
+# Run proxy
+For more infomation on how to start the proxy please visit:
+[SATOSA proxy doc](https://github.com/its-dirg/SATOSA/blob/master/doc/README.md#run), 
 
-optional arguments:
-
-    -h, --help  show this help message and exit
-    -v VALID    How long, in days, the metadata is valid from the time of
-              creation
-    -c CERT     certificate
-    -i ID       The ID of the entities descriptor
-    -k KEYFILE  A file with a key to sign the metadata with
-    -n NAME
-    -s          sign the metadata
-    -x XMLSEC   xmlsec binaries to be used for the signing
-    -o OUTPUT   Where to write metadata files
+<br>
+<br>
 
 # State
 
