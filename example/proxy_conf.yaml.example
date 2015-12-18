@@ -13,7 +13,7 @@ BACKEND_MODULES:
 FRONTEND_MODULES:
   - "saml2_frontend"
 MICRO_SERVICES:
-  - "statistics_service.yaml"
+  - "statistics_service"
 USER_ID_HASH_SALT: "61a89d2db0b9e1e27d490d050b478fe71f352fddd3528a44157f43e339c6c62d96172bf84233317"
 CONSENT:
   enable: Yes
@@ -51,6 +51,10 @@ LOGGING:
       encoding: utf8
   loggers:
     satosa:
+      level: DEBUG
+      handlers: [console]
+      propagate: no
+    vopaas:
       level: DEBUG
       handlers: [console]
       propagate: no
