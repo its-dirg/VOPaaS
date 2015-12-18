@@ -42,9 +42,11 @@ class StatisticsService(ResponseMicroService):
         try:
             ticket = self._get_ticket()
             self._register(data.to_requestor, data.auth_info.issuer, ticket)
-        except:
-            satosa_logging(LOGGER, logging.ERROR, "statistics service error", context.state,
-                           exc_info=True)
+        except requests.ConnectionError as e:
+            satosa_logging(LOGGER, logging.ERROR, "Could not connect to the statistics service '{}'".format(self.stat_uri), context.state)
+        except Exception as e:
+            satosa_logging(LOGGER, logging.ERROR, "Could not connect to the statistics service '{}'".format(self.stat_uri), context.state, exc_info=True)
+
         return data
 
     def _register(self, sp: str, idp: str, ticket: str) -> None:
