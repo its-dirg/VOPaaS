@@ -1,1 +1,0 @@
-git+https://github.com/its-dirg/satosa@3a36469736c30dcf391674ccd2768355a894109a
