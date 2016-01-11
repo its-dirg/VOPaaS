@@ -1,3 +1,3 @@
-https://github.com/its-dirg/ALservice@v1.0.0
-https://github.com/its-dirg/CMservice@v1.0.0
-https://github.com/its-dirg/vopaas_statistics@v1.0.0
+git+https://github.com/its-dirg/ALservice@v1.0.0
+git+https://github.com/its-dirg/CMservice@v1.0.0
+git+https://github.com/its-dirg/vopaas_statistics@v1.0.0
