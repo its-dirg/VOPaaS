@@ -27,8 +27,7 @@ config:
     xmlsec_binary: /usr/bin/xmlsec1
 
   acr_mapping:
-    "": default-LoA
-    "https://accounts.google.com": LoA1
+    "": http://eidas.europa.eu/LoA/low
 
   state_id: <name>
   base: <base_url>
