@@ -4,17 +4,19 @@ VOPaaS is a lightweight proxy used as a bridge between a SAML2int Service Provid
 identity providers such as Facebook, google and SAML2int IdP's.
 
 # Architectural overview
+In this section the some describing the VOPaaS application on different levels
 
+##Service communications
 ![](images/VOPaaS_overview.png "VOPaaS overview image")
 
-1. The client SP sends a request  
-1. The proxy connects to the requested identity provider and receives user infomation 
+1. The client SP sends a request to a specific URL which specifies which identity provider it wants to communicate with.
+1. The proxy connects to the requested identity provider and receives user information 
 1. The proxy connects to a account linking service 
 1. The proxy connects to a consent manager service 
 1. The returned user info attributes which where returned from the 
 service provider and for which the user has given consent will be sent to the SP
 
-
+##Internal components
 ![](images/VOPaaS_proxy_internals.png "VOPaaS internal communication")
 
 1. Service provider makes request to proxy. At a specific url which specifies which identity it want to use
@@ -33,7 +35,13 @@ service provider and for which the user has given consent will be sent to the SP
 1. The internal data is the converted to a SAML2 int response.
 1. The response is returned to the service provider 
 
-![](images/vopaas_consent_comunication.png "VOPaaS internal communication")
+##SP view
+![](images/vopaas_sp_view.png "VOPaaS SP view")
+
+The service provider does not know that it's actually talking to a proxy. It only knows about the identity providers.
+
+##Consent
+![](images/vopaas_consent_comunication.png "Consent communication")
 
 1. Verifies if consent was given for a given SP, IdP and set of attributes
 
@@ -43,8 +51,8 @@ service provider and for which the user has given consent will be sent to the SP
     1.2 Send ticket to show consent page
 1. If consent where given the consent service will redirect back to the proxy 
 
-
-![](images/vopaas_AL_comunication.png "VOPaaS internal communication")
+##Account linking
+![](images/vopaas_AL_comunication.png "Account linking communication")
 
 1. Request unique identifier for a given user in combination with a identity provider
     1. If a link between the user and identity provider does NOT exists a ticket is returned to the proxy
@@ -57,12 +65,21 @@ service provider and for which the user has given consent will be sent to the SP
 
 # Installation
 
+In order to make the installation easier a separate project which uses ansible in order to install tha VOPaaS proxy has been created. For more information visit:
+https://github.com/its-dirg/vopaas_ansible
+
 1. Download this repository as a [zip file](https://github.com/its-dirg/vopaas_ansible/archive/master.zip).
-1. All configuration files are located in **TODO add skeleton configuration files somewhere in vopaas_ansible**
-1. Modify all necessary parameters, described in [Configuration](configuration).
-1. Run `ansible-playbook` **TODO specify command to run and describe example inventory?**
-1. **TODO Should SP's/backing IdP's read metadata from URL? (in that case we really should let a proper webserver (nginx or Apache) serve static files).
-1. **TODO specify location of generated frontend/backend metadata or make location configurable in Ansible**
+1. Install dependencies:
+```
+pip install -e .
+pip install -r requirements.txt
+```
+1. Example configuration files are located in the example folder
+1. Modify all necessary parameters, described in [Configuration](#configuration) section below.
+1. In order to start the application run:
+```
+gunicorn -b<socket address> satosa.wsgi:app --keyfile=<https key> --certfile=<https cert>
+```
 
 <br>
 <br>
@@ -87,26 +104,6 @@ Configuration parameters:
 | `config.rest_uri` | string | `https://127.0.0.1:8168` | url to the REST endpoint of the service |
 | `config.signing_key` | string | `pki/statistics.key` | path to key used for signing the request to the service |
 | `config.verify_ssl` | bool | `No` | whether the HTTPS certificate of the service should be verified when doing requests to it |
-
-
-<!-- ## SAML2 frontend
-**TODO how should SP metadata be handled in production? can VOPaaS reload the specified metadata file at certain intervals or should we use MDX or something else?, see `metadata` param in table below**
-
-**TODO should there be any default "attribute_restrictions"?**
-**TODO is the default assertion lifetime reasonable?**
-
-## Backend configuration
-
-### SAML2 backend
-
-**TODO how should IdP metadata be handled in production? can VOPaaS reload the specified metadata file at certain intervals or should we use MDX or something else?, see `metadata` param in table below**
-
-### Social login backends
-
-#### Facebook
-
-**TODO set sane defaults for `fields` in vopaas example/default FB config**
--->
 
 <br>
 <br>
@@ -149,9 +146,3 @@ response back to the calling SP.
 ### VOPaaSSamlBackend
 
 Only saves the relay state for the backend-IDP request.
-
-### VOPaaSOpenIdBackend
-TODO
-
-### VOPaaSOFacebookBackend
-TODO
