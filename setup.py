@@ -11,6 +11,6 @@ setup(
     author_email='dirg@its.umu.se',
     description='Protocol proxy for the Virtual Organization Platform as a Service (VOPaaS).',
     install_requires=[
-        'satosa==0.6.0'
+        'satosa==0.6.1'
     ]
 )
